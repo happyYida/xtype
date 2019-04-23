@@ -6,10 +6,6 @@ import (
 	"strconv"
 )
 
-const null = "null"
-
-var jsonNull = []byte(null)
-
 type XInt64 struct {
 	Int64 int64
 	Valid bool

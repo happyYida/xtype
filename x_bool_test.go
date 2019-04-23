@@ -126,3 +126,18 @@ func TestXBool_UnmarshalJSON2(t *testing.T) {
 		t.Logf("%#v", *p.IsMan)
 	}
 }
+
+func TestXBool_UnmarshalJSON3(t *testing.T) {
+	type Person struct {
+		IsMan XBool
+	}
+
+	bf := []byte(`{"IsMan":123}`)
+	p := new(Person)
+	e := json.Unmarshal(bf, p)
+	if e != nil {
+		t.Log(e)
+	} else {
+		t.Errorf("%#v", *p)
+	}
+}

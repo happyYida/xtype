@@ -1,6 +1,7 @@
 package xtype
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"strconv"
@@ -18,7 +19,7 @@ func NewXBool (Bool bool) XBool {
 	}
 }
 
-// json编码
+//json编码
 func (x XBool) MarshalJSON() ([]byte, error) {
 	if x.Valid {
 		return []byte(strconv.FormatBool(x.Bool)), nil
@@ -27,20 +28,25 @@ func (x XBool) MarshalJSON() ([]byte, error) {
 	}
 }
 
-// json解码
+//json解码
+//严格遵守值为true或false才能进行转换
 func (x *XBool) UnmarshalJSON(b []byte) error {
-	s := string(b)
 
-	if s == null {
+	if bytes.Equal(b, jsonNull) {
 		x.Bool, x.Valid = false, false
 		return nil
 	} else {
-		if b, e := strconv.ParseBool(s); e != nil {
-			x.Bool, x.Valid = false, false
-			return errors.New(fmt.Sprint(s, " XBool unmarshal json invalid, ", e.Error()))
-		} else {
-			x.Bool, x.Valid = b, true
+
+		switch {
+		case bytes.Equal(b, jsonTrue):
+			x.Bool, x.Valid = true, true
 			return nil
+		case bytes.Equal(b, jsonFalse):
+			x.Bool, x.Valid = false, true
+			return nil
+		default:
+			x.Bool, x.Valid = false, false
+			return errors.New(fmt.Sprint(string(b), " XBool unmarshal json invalid."))
 		}
 	}
 }

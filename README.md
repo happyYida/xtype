@@ -11,3 +11,7 @@
 1) int64
 2) bool
 3) string
+4) time
+
+### 使用包
+go get -u github.com/happyYida/xtype
